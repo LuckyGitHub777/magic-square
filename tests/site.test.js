@@ -52,3 +52,12 @@ test('no automatic publishing workflow or remote script is included', () => {
   assert.ok(assetPaths.includes('styles.css'));
   assert.ok(!/\beval\s*\(/.test(read('app.js').toString()));
 });
+
+
+test('minimal no-JavaScript fallback preserves every source-grid cell', () => {
+  const fallback = html.match(/<noscript>([\s\S]*?)<\/noscript>/)?.[1];
+  assert.ok(fallback, 'Fallback missing');
+  assert.equal([...fallback.matchAll(/<tr>/g)].length, 6);
+  assert.equal([...fallback.matchAll(/<td>\d+<\/td>/g)].length, 36);
+  assert.equal([...html.matchAll(/class="insight-card"/g)].length, 2);
+});
