@@ -41,7 +41,7 @@ Historical references:
 
 ## Repository posture
 
-This project is maintained in a **private repository**. It is self-contained: no external runtime scripts, analytics, telemetry, automated deployments, passwords, secrets, or third-party application packages. A minimal GitHub Actions workflow verifies syntax and source tests on pushes and pull requests. As of the latest remote verification, GitHub Pages is **not enabled** (`has_pages: false`). Publishing requires configuring Pages in repository Settings; source pushes alone cannot enable it. The historical-reference link is the only outbound link within the site. The root `.nojekyll` file is inert while Pages remains disabled and avoids unwanted Jekyll processing if static hosting is later authorized.
+This project is maintained in a **private repository**. It is self-contained: no external runtime scripts, analytics, telemetry, client-side accounts, passwords, secrets, or third-party application packages. The minimal GitHub Actions workflow verifies source tests and confirms that GitHub Pages serves the exact committed production files. The Pages publishing source is configured in GitHub settings, not by a custom deployment script. GitHub Pages is now enabled in repository settings. The production URL is [Magic Square](https://luckygithub777.github.io/magic-square/). On pushes to `main`, GitHub Actions verifies the exact live HTML and static assets against the committed source once Pages has published them. The historical-reference link is the only outbound link within the site. The root `.nojekyll` file avoids Jekyll processing so the static HTML, CSS, JavaScript, and artwork are served unchanged.
 
 The supplied artwork in `assets/solar-square-art.webp` is an original AI-generated visualization. The original source number placement remains the canonical data in `square.js`; the image is illustrative, not a replacement for verified values.
 
@@ -52,7 +52,7 @@ Open `index.html` to explore the square without network access. Run `node --test
 ### GitHub compatibility and privacy
 
 - GitHub repository: preserve **private** visibility. A Pages website is not live until its publishing source is configured and its public URL returns the expected application.
-- Site entry point: `index.html` in the repository root; CSS, JS, and the artwork use relative paths. If publication is deliberately enabled later, use `main` and `/(root)` as the publishing source after reviewing visibility and content.
-- **Private repository ≠ private GitHub Pages site.** Publishing through GitHub Pages normally makes the website publicly accessible, even if the source repository is private. Do not enable Pages for confidential content without an independently verified access-control approach.
+- Site entry point: `index.html` in the repository root; CSS, JS, and the artwork use relative paths. For branch-based publishing, select `main` and `/(root)` in GitHub Pages settings.
+- **Private repository ≠ private GitHub Pages site.** Publishing through GitHub Pages normally makes the website publicly accessible, even if the source repository is private. The published experience is intentionally public; do not add secrets or confidential content.
 - Confirm repository visibility and the exact release commit before publishing. GitHub user and commit metadata are still present in private-repository history.
 - This project is a static client-side experience. All source code and assets are accessible to anyone who receives a published build; there is no authentication or server-side access control inside this repository.

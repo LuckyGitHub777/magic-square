@@ -27,3 +27,37 @@ jobs:
           node --check app.js
       - name: Run complete test suite
         run: node --test
+
+  production-smoke:
+    name: Live GitHub Pages release verification
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact commit
+        uses: actions/checkout@v4
+      - name: Verify live page matches this commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          site="https://luckygithub777.github.io/magic-square"
+          matched=0
+          for attempt in $(seq 1 28); do
+            if curl --fail --silent --show-error --location --max-time 12 "${site}/index.html" -o /tmp/magic-square-live-index.html \
+              && cmp --silent index.html /tmp/magic-square-live-index.html; then
+              matched=1
+              echo "Production index.html matches this exact commit (attempt ${attempt})."
+              break
+            fi
+            echo "Pages not yet serving this exact commit (attempt ${attempt}/28)."
+            sleep 15
+          done
+          test "$matched" -eq 1 || { echo "::error::Production index did not match this commit"; exit 1; }
+          for file in styles.css square.js app.js assets/solar-square-art.webp; do
+            curl --fail --silent --show-error --location --max-time 20 "${site}/${file}" -o "/tmp/magic-square-$(basename "$file")"
+            cmp --silent "$file" "/tmp/magic-square-$(basename "$file")" \
+              || { echo "::error::Production asset differs from committed ${file}"; exit 1; }
+            echo "Verified exact production asset: ${file}"
+          done
+          echo "Production release verified end-to-end: ${site}/"
