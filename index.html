@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0d1015">
+  <meta name="description" content="Magic Square is a private-by-default interactive study of mathematical magic squares, starting with the solar 6×6 square.">
+  <title>Magic Square · The Solar Square</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="ambient" aria-hidden="true"><div class="halo halo-one"></div><div class="halo halo-two"></div></div>
+  <div class="site">
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="Magic Square home"><span class="brand-mark" aria-hidden="true">☉</span><span>MAGIC<span class="light"> / </span>SQUARE</span></a>
+      <span class="edition">A STUDY IN MATHEMATICAL ORDER</span>
+      <a class="top-link" href="#context">Context <span aria-hidden="true">↗</span></a>
+    </header>
+
+    <main id="top">
+      <section class="introduction">
+        <div class="eyebrow"><span class="eyebrow-line"></span> THE SOLAR KAMEA <span class="eyebrow-line"></span></div>
+        <h1>The geometry<br><em>of constancy.</em></h1>
+        <p>Thirty-six numbers. Fourteen equal lines. One invariant.<br>Explore the classical solar magic square through pattern, proof, and light.</p>
+      </section>
+
+      <section class="workbench" aria-label="Interactive solar magic square">
+        <div class="square-panel">
+          <div class="panel-heading"><span>01 / THE SQUARE</span><span class="sunsymbol" aria-hidden="true">✳</span></div>
+          <div class="square-frame">
+            <div class="square-corners" aria-hidden="true"></div>
+            <div id="square" class="square" role="group" aria-label="Interactive six-by-six solar magic square, numbers 1 through 36" aria-describedby="square-instructions"></div>
+            <p id="square-instructions" class="sr-only">Use arrow keys to move between cells, then Enter or Space to select the number.</p>
+          </div>
+          <div class="under-square"><span>36 ENTRIES · 1–36</span><span>SELECT ANY NUMBER</span></div>
+        </div>
+        <div class="explorer-panel">
+          <div class="panel-heading"><span>02 / EXPLORE</span><span class="status"><span class="status-dot"></span> VERIFIED</span></div>
+          <div class="metrics">
+            <div class="metric"><div class="metric-value">6 × 6</div><div class="metric-label">ORDER</div></div>
+            <div class="metric"><div class="metric-value">111</div><div class="metric-label">MAGIC CONSTANT</div></div>
+            <div class="metric"><div class="metric-value">666</div><div class="metric-label">TOTAL SUM</div></div>
+          </div>
+          <div class="section-caption">VIEW THE STRUCTURE</div>
+          <div class="modes" role="group" aria-label="Square exploration modes">
+            <button type="button" class="mode active" data-mode="focus" aria-pressed="true">Inspect</button>
+            <button type="button" class="mode" data-mode="rows" aria-pressed="false">Rows</button>
+            <button type="button" class="mode" data-mode="columns" aria-pressed="false">Columns</button>
+            <button type="button" class="mode" data-mode="diagonals" aria-pressed="false">Diagonals</button>
+            <button type="button" class="mode" data-mode="pairs" aria-pressed="false">Complements</button>
+            <button type="button" class="mode" data-mode="trace" aria-pressed="false">Trace 1 → 36</button>
+          </div>
+          <div class="inspector" aria-live="polite" aria-atomic="true">
+            <div class="inspector-kicker" id="inspector-kicker">THE INVARIANT</div>
+            <div class="inspector-headline" id="inspector-headline">Every line returns to 111.</div>
+            <p id="inspector-body">Select a number to illuminate its row and column. Explore every line, complementary pair, or the full numerical journey.</p>
+            <div id="inspector-sum" class="inspector-sum">6 rows + 6 columns + 2 main diagonals = 14 verified lines.</div>
+          </div>
+          <div class="trace-actions" id="trace-actions" hidden>
+            <button type="button" id="trace-prev" class="small-action">← Previous</button>
+            <button type="button" id="trace-next" class="small-action">Next →</button>
+          </div>
+          <div class="check"><span class="check-mark" aria-hidden="true">✓</span><span id="check-status">All 14 lines independently checked</span></div>
+        </div>
+      </section>
+
+      <section class="lower-grid" aria-label="Mathematical insight">
+        <article class="insight-card"><div class="card-index">I / THE SUM</div><div class="equation">1 + 2 + ⋯ + 36 = <strong>666</strong></div><p>The total is a property of the integers one through thirty-six. It requires no hidden assumption.</p></article>
+        <article class="insight-card"><div class="card-index">II / THE LINE</div><div class="equation">6 × 111 = <strong>666</strong></div><p>The six equally balanced rows each sum to 111. The columns and both main diagonals do too.</p></article>
+        <article class="insight-card"><div class="card-index">III / THE PAIR</div><div class="equation">n + (37 − n) = <strong>37</strong></div><p>Each number has an arithmetic complement within the range 1–36. Select <em>Complements</em> to find it.</p></article>
+      </section>
+
+      <section id="context" class="context-section">
+        <div class="context-copy"><div class="eyebrow small">HISTORY · NOT HYPOTHESIS</div><h2>The square and<br><em>its story.</em></h2><p>This arrangement is a left-to-right reflection of the solar square recorded in Western Renaissance planetary-square traditions, including Cornelius Agrippa’s <em>Three Books of Occult Philosophy</em>, Book II, Chapter 22.</p><p>The Sun association is historical symbolism. The numerical relationships above are mathematical facts. Neither establishes supernatural effects or a concealed physical force.</p><p class="source-line">Reference: <a href="https://esotericnotebook.com/planetary-magic/planets/sun" target="_blank" rel="noreferrer noopener">Solar square and historical source ↗</a></p></div>
+        <figure class="art-panel"><img src="assets/solar-square-art.webp" alt="Gold solar magic square on parchment, encircled by geometric golden light and a cosmic sky"><figcaption>A VISUAL INTERPRETATION · SOURCE NUMBERS PRESERVED</figcaption></figure>
+      </section>
+      <noscript><p class="script-note">JavaScript is required for the interactive highlighting and verification display. The mathematical information and historical context remain readable.</p></noscript>
+    </main>
+    <footer><span>☉ MAGIC SQUARE · SOL 111</span><span>BUILT TO OBSERVE · BUILT TO VERIFY</span><a href="#top">RETURN TO THE SQUARE ↑</a></footer>
+  </div>
+  <script src="square.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
