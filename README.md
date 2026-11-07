@@ -4,7 +4,7 @@ A self-contained interactive atlas of mathematical magic squares. The first expe
 
 ## Open
 
-Open `index.html` in any modern desktop or mobile browser. No installation, server, signup, or network connection is required for the interactive experience. A static table remains available when JavaScript is disabled. One optional historical source link leads to an external website if selected.
+Open `index.html` in any modern desktop or mobile browser. No installation, server, signup, or network connection is required for the interactive experience. When JavaScript is disabled, the six-by-six source grid appears in place of the inactive interactive controls. One optional historical source link leads to an external website if selected.
 
 ## Explore
 
@@ -41,7 +41,11 @@ Historical references:
 
 ## Repository posture
 
-This project is maintained in a **private repository**. It is self-contained: no external runtime scripts, analytics, telemetry, client-side accounts, passwords, secrets, or third-party application packages. The minimal GitHub Actions workflow verifies source tests and confirms that GitHub Pages serves the exact committed production files. The single CI workflow detects the GitHub Pages publishing mode, deploys only the approved static assets when Pages is configured for GitHub Actions, and verifies the exact live files. With branch publishing, it leaves publication to GitHub's branch-based deployer. GitHub Pages is now enabled in repository settings. The production URL is [Magic Square](https://luckygithub777.github.io/magic-square/). On pushes to `main`, GitHub Actions verifies the exact live HTML and static assets against the committed source once Pages has published them. The historical-reference link is the only outbound link within the site. The root `.nojekyll` file avoids Jekyll processing so the static HTML, CSS, JavaScript, and artwork are served unchanged.
+The source repository is **private**, but its GitHub Pages site is **public**. The site is static, with no server-side backend, login, database, analytics, telemetry, external scripts, package dependencies, or client-side secrets.
+
+Only `index.html`, `styles.css`, `square.js`, `app.js`, `.nojekyll`, and `assets/solar-square-art.webp` are staged for the Pages release. GitHub Actions runs the source checks before deployment, publishes from `main`, and verifies that live HTML, styles, scripts, and artwork match the release commit byte-for-byte. It also confirms that the README, test suite, and workflow file are not served as website assets.
+
+[Open production Magic Square](https://luckygithub777.github.io/magic-square/). The sole optional external link within the site is its historical reference.
 
 The supplied artwork in `assets/solar-square-art.webp` is an original AI-generated visualization. The original source number placement remains the canonical data in `square.js`; the image is illustrative, not a replacement for verified values.
 
@@ -51,8 +55,8 @@ Open `index.html` to explore the square without network access. Run `node --test
 
 ### GitHub compatibility and privacy
 
-- GitHub repository: preserve **private** visibility. A Pages website is not live until its publishing source is configured and its public URL returns the expected application.
-- Site entry point: `index.html` in the repository root; CSS, JS, and the artwork use relative paths. For branch-based publishing, select `main` and `/(root)` in GitHub Pages settings.
+- GitHub repository: preserve **private** visibility. The Pages website is live and independently checked after every deployment.
+- Site entry point: `index.html` in the repository root; CSS, JS, and the artwork use relative paths. Pages is configured for GitHub Actions publishing from `main`.
 - **Private repository ≠ private GitHub Pages site.** Publishing through GitHub Pages normally makes the website publicly accessible, even if the source repository is private. The published experience is intentionally public; do not add secrets or confidential content.
-- Confirm repository visibility and the exact release commit before publishing. GitHub user and commit metadata are still present in private-repository history.
+- Keep public artifacts limited to approved website assets. GitHub user and commit metadata remain in private-repository history.
 - This project is a static client-side experience. All source code and assets are accessible to anyone who receives a published build; there is no authentication or server-side access control inside this repository.

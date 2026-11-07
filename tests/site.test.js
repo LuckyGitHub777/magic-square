@@ -46,15 +46,18 @@ test('the illustrative artwork is a real, nonempty WebP image', () => {
   assert.equal(image.toString('ascii', 8, 12), 'WEBP');
 });
 
-test('verification and controlled production workflow are present', () => {
+test('minimal deployment workflow preserves approved assets and checks production', () => {
   const workflowDir = path.join(root, '.github', 'workflows');
   assert.deepEqual(fs.readdirSync(workflowDir), ['verify.yml']);
   const workflow = read('.github/workflows/verify.yml').toString();
   assert.match(workflow, /node --test/);
   assert.ok(workflow.includes('actions/deploy-pages@v4'));
   assert.ok(workflow.includes('actions/upload-pages-artifact@v4'));
-  assert.ok(workflow.includes('Verify live page matches this commit'));
+  assert.ok(workflow.includes('Confirm deployed bytes and reject unintended public files'));
   assert.ok(workflow.includes('cp index.html styles.css square.js app.js'));
+  assert.ok(workflow.includes('Not published:'));
+  assert.ok(!workflow.includes('pages-config:'));
+  assert.ok(!workflow.includes('production-smoke:'));
   assert.ok(assetPaths.includes('square.js') && assetPaths.includes('app.js'));
   assert.ok(assetPaths.includes('styles.css'));
   assert.ok(!/\beval\s*\(/.test(read('app.js').toString()));
@@ -67,4 +70,6 @@ test('minimal no-JavaScript fallback preserves every source-grid cell', () => {
   assert.equal([...fallback.matchAll(/<tr>/g)].length, 6);
   assert.equal([...fallback.matchAll(/<td>\d+<\/td>/g)].length, 36);
   assert.equal([...html.matchAll(/class="insight-card"/g)].length, 2);
+  assert.ok(html.indexOf('<noscript>') < html.indexOf('<section class="workbench"'));
+  assert.match(fallback, /<style>\.workbench\{display:none\}<\/style>/);
 });
