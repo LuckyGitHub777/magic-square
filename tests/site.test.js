@@ -46,8 +46,12 @@ test('the illustrative artwork is a real, nonempty WebP image', () => {
   assert.equal(image.toString('ascii', 8, 12), 'WEBP');
 });
 
-test('no automatic publishing workflow or remote script is included', () => {
-  assert.ok(!fs.existsSync(path.join(root, '.github', 'workflows')));
+test('verification workflow is present without public deployment automation', () => {
+  const workflowDir = path.join(root, '.github', 'workflows');
+  assert.deepEqual(fs.readdirSync(workflowDir), ['verify.yml']);
+  const workflow = read('.github/workflows/verify.yml').toString();
+  assert.match(workflow, /node --test/);
+  assert.doesNotMatch(workflow, /deploy-pages|upload-pages-artifact|pages:\s*write/);
   assert.ok(assetPaths.includes('square.js') && assetPaths.includes('app.js'));
   assert.ok(assetPaths.includes('styles.css'));
   assert.ok(!/\beval\s*\(/.test(read('app.js').toString()));
