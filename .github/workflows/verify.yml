@@ -28,10 +28,67 @@ jobs:
       - name: Run complete test suite
         run: node --test
 
+
+  pages-config:
+    name: Identify configured GitHub Pages publishing source
+    needs: verify
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: read
+    outputs:
+      build_type: ${{ steps.config.outputs.build_type }}
+    steps:
+      - name: Read Pages publishing mode
+        id: config
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          cfg="$(curl --fail --silent --show-error --location --max-time 20 \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/pages")"
+          mode="$(jq -r '.build_type // "legacy"' <<< "$cfg")"
+          echo "build_type=$mode" >> "$GITHUB_OUTPUT"
+          echo "GitHub Pages publishing mode: $mode"
+
+  deploy-pages:
+    name: Publish minimal static site when Actions-managed
+    needs: [verify, pages-config]
+    if: needs.pages-config.outputs.build_type == 'workflow'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout exact source
+        uses: actions/checkout@v4
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Stage site files only
+        run: |
+          mkdir -p dist/assets
+          cp index.html styles.css square.js app.js .nojekyll dist/
+          cp assets/solar-square-art.webp dist/assets/
+      - name: Upload production artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+      - name: Deploy GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+
   production-smoke:
     name: Live GitHub Pages release verification
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: verify
+    needs: [verify, pages-config, deploy-pages]
+    if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main' && needs.verify.result == 'success' && needs.pages-config.result == 'success' && (needs.deploy-pages.result == 'success' || needs.deploy-pages.result == 'skipped')
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:

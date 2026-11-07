@@ -46,12 +46,15 @@ test('the illustrative artwork is a real, nonempty WebP image', () => {
   assert.equal(image.toString('ascii', 8, 12), 'WEBP');
 });
 
-test('verification workflow is present without public deployment automation', () => {
+test('verification and controlled production workflow are present', () => {
   const workflowDir = path.join(root, '.github', 'workflows');
   assert.deepEqual(fs.readdirSync(workflowDir), ['verify.yml']);
   const workflow = read('.github/workflows/verify.yml').toString();
   assert.match(workflow, /node --test/);
-  assert.doesNotMatch(workflow, /deploy-pages|upload-pages-artifact|pages:\s*write/);
+  assert.ok(workflow.includes('actions/deploy-pages@v4'));
+  assert.ok(workflow.includes('actions/upload-pages-artifact@v4'));
+  assert.ok(workflow.includes('Verify live page matches this commit'));
+  assert.ok(workflow.includes('cp index.html styles.css square.js app.js'));
   assert.ok(assetPaths.includes('square.js') && assetPaths.includes('app.js'));
   assert.ok(assetPaths.includes('styles.css'));
   assert.ok(!/\beval\s*\(/.test(read('app.js').toString()));
