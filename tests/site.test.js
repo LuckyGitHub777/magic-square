@@ -94,7 +94,8 @@ test('polished fallbacks, truth in labeling and exhibit-specific affordances', (
   assert.match(html, /id="panel-symbol"/);
   assert.match(html, /id="verification-status"/);
   assert.match(app, /put\('panel-symbol',e\.symbol\)/);
-  assert.match(app, /source and context/);
+  assert.match(app, /sourceNames/);
+  assert.match(app, /Azim Premji University · research article/);
   assert.match(app, /state\.exhibit\.id===id/);
   assert.match(app, /e\.semimagic\?' semimagic-square study'/);
   assert.match(html, /loading="lazy" decoding="async"/);
