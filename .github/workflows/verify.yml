@@ -30,6 +30,8 @@ jobs:
           node --check square.js
           node --check app.js
           node --test
+      - name: Headless Chromium UX audit
+        run: node tests/browser-smoke.cjs
 
   publish:
     name: Deploy and verify live Pages

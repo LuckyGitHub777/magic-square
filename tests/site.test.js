@@ -99,3 +99,12 @@ test('polished fallbacks, truth in labeling and exhibit-specific affordances', (
   assert.match(app, /e\.semimagic\?' semimagic-square study'/);
   assert.match(html, /loading="lazy" decoding="async"/);
 });
+
+test('real browser interaction checks are enforced on every PR and production release', () => {
+  const workflow=read('.github/workflows/verify.yml').toString();
+  const browser=read('tests/browser-smoke.cjs').toString();
+  assert.match(workflow, /node tests\/browser-smoke\.cjs/);
+  assert.match(browser, /--headless=new/);
+  assert.match(browser, /history\.back/);
+  assert.match(browser, /generator-order/);
+});
