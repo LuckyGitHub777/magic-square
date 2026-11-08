@@ -51,8 +51,13 @@ test('minimal deployment workflow preserves approved assets and checks productio
   assert.deepEqual(fs.readdirSync(workflowDir), ['verify.yml']);
   const workflow = read('.github/workflows/verify.yml').toString();
   assert.match(workflow, /node --test/);
-  assert.ok(workflow.includes('actions/deploy-pages@v4'));
-  assert.ok(workflow.includes('actions/upload-pages-artifact@v4'));
+  assert.match(workflow, /actions\/deploy-pages@[a-f0-9]{40}\b/);
+  assert.match(workflow, /actions\/upload-pages-artifact@[a-f0-9]{40}\b/);
+  const actionRefs = [...workflow.matchAll(/^\s*uses:\s*actions\/[^\s@]+@([^\s#]+)/gm)];
+  assert.equal(actionRefs.length, 6);
+  for (const ref of actionRefs) {
+    assert.match(ref[1], /^[0-9a-f]{40}$/);
+  }
   assert.ok(workflow.includes('Confirm deployed bytes and reject unintended public files'));
   assert.ok(workflow.includes('cp index.html styles.css square.js app.js'));
   assert.ok(workflow.includes('Not published:'));
