@@ -94,7 +94,8 @@ test('polished fallbacks, truth in labeling and exhibit-specific affordances', (
   assert.match(html, /id="panel-symbol"/);
   assert.match(html, /id="verification-status"/);
   assert.match(app, /put\('panel-symbol',e\.symbol\)/);
-  assert.match(app, /source and context/);
+  assert.match(app, /sourceNames/);
+  assert.match(app, /Azim Premji University · research article/);
   assert.match(app, /state\.exhibit\.id===id/);
   assert.match(app, /e\.semimagic\?' semimagic-square study'/);
   assert.match(html, /loading="lazy" decoding="async"/);
@@ -107,4 +108,18 @@ test('real browser interaction checks are enforced on every PR and production re
   assert.match(browser, /--headless=new/);
   assert.match(browser, /history\.back/);
   assert.match(browser, /generator-order/);
+});
+
+test('collection semantics and construction selection are complete', () => {
+  const app=read('app.js').toString(),css=read('styles.css').toString();
+  assert.match(html, /THE SEVEN PLANETARY SQUARES/);
+  assert.match(html, /id="planetary-switcher"[^>]*role="group"/);
+  assert.match(html, /id="historic-switcher"[^>]*role="group"/);
+  assert.match(html, /id="laboratory-state"[^>]*role="status"/);
+  assert.match(app, /drawer\.open=e\.group!=='planetary'/);
+  assert.match(app, /laboratoryState\.hidden=e\.group!=='laboratory'/);
+  assert.match(app, /'Agrippa · planetary tables'/);
+  assert.match(app, /button\.setAttribute\('aria-label'/);
+  assert.match(css, /\.lab-state\[hidden\]\{display:none\}/);
+  assert.match(read('tests/browser-smoke.cjs').toString(), /Multiple named active items/);
 });

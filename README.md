@@ -14,7 +14,7 @@ The laboratory generates normal magic squares of orders **3 through 12**, using 
 
 ## Explore
 
-Select an exhibit, then use **Inspect, Rows, Columns, Diagonals, Complements, Trace**. The editor updates the numeric grid, proof, historical explanation, and source link together. Complements are disabled for non-normal squares. Franklin's diagonal exception is explained explicitly. Mouse, touch and keyboard arrow navigation are available. Browser Back and Forward restore the selected exhibit. Dense mobile grids keep comfortably sized cells and can scroll horizontally with an on-screen cue.
+Select an exhibit in **The Collection**, then use **Inspect, Rows, Columns, Diagonals, Complements, Trace**. The collection identifies the current planetary or masterpiece selection, collapses the historical drawer when returning to a planet, and visibly labels the current laboratory construction. The explorer updates the numerical grid, proof, historical explanation, and named source link together. Complements are disabled for non-normal squares. Franklin's diagonal exception is explained explicitly. Mouse, touch and keyboard arrow navigation are available. Browser Back and Forward restore the selected exhibit. Dense mobile grids keep comfortably sized cells and can scroll horizontally with an on-screen cue.
 
 Direct links use `?square=jupiter`, `?square=durer`, or `?square=generated-10`. The no-JavaScript fallback retains the original complete 6×6 Solar exhibit.
 
