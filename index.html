@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0d1015">
-  <meta name="description" content="Magic Square is a interactive atlas of the seven planetary magic squares, historical examples, and verified normal-square constructions.">
+  <meta name="description" content="Magic Square is an interactive atlas of the seven planetary magic squares, historical examples, and verified normal-square constructions.">
   <title>Magic Square · The Mathematical Atlas</title>
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -24,7 +24,7 @@
         <p>Seven planetary squares. Historic masterpieces. Infinite patterns.<br>Explore number, geometry and mathematical constancy.</p>
       </section>
 
-      <noscript><style>.workbench{display:none}</style><section class="fallback"><h2>Source grid</h2><p>JavaScript is required for interactive highlighting. The exact square remains readable below.</p><table aria-label="Six by six solar magic square"><tbody>
+      <noscript><style>.workbench{display:none}.collection{display:none}</style><section class="fallback"><h2>Source grid</h2><p>JavaScript is required for interactive highlighting. The exact square remains readable below.</p><table aria-label="Six by six solar magic square"><tbody>
         <tr><td>1</td><td>35</td><td>34</td><td>3</td><td>32</td><td>6</td></tr>
         <tr><td>30</td><td>8</td><td>28</td><td>27</td><td>11</td><td>7</td></tr>
         <tr><td>24</td><td>23</td><td>15</td><td>16</td><td>14</td><td>19</td></tr>
@@ -55,7 +55,7 @@
       </nav>
       <section class="workbench" aria-label="Interactive magic square">
         <div class="square-panel">
-          <div class="panel-heading"><span id="square-label">SUN KAMEA</span><span class="sunsymbol" aria-hidden="true">✳</span></div>
+          <div class="panel-heading"><span id="square-label">02 / SUN KAMEA</span><span class="sunsymbol" id="panel-symbol" aria-hidden="true">☉</span></div>
           <div class="square-frame">
             <div class="square-corners" aria-hidden="true"></div>
             <div id="square" class="square" role="group" aria-label="Interactive six-by-six solar magic square, numbers 1 through 36" aria-describedby="square-instructions"></div>
@@ -64,7 +64,7 @@
           <p id="scroll-hint" class="mobile-scroll-hint" hidden>Swipe sideways to explore the complete grid.</p><div class="under-square"><span id="square-range">36 ENTRIES · 1–36</span><span>SELECT ANY NUMBER</span></div>
         </div>
         <div class="explorer-panel">
-          <div class="panel-heading"><span>02 / EXPLORE</span><span class="status"><span class="status-dot"></span> VERIFIED</span></div>
+          <div class="panel-heading"><span>03 / EXPLORE</span><span class="status"><span class="status-dot" aria-hidden="true"></span><span id="verification-status">VERIFIED</span></span></div>
           <div class="metrics">
             <div class="metric"><div class="metric-value" id="metric-order">6 × 6</div><div class="metric-label">ORDER</div></div>
             <div class="metric"><div class="metric-value" id="metric-constant">111</div><div class="metric-label">MAGIC CONSTANT</div></div>
@@ -107,7 +107,7 @@
           <p>Its numerical structure is mathematics; planetary and esoteric interpretations are cultural history, not scientifically demonstrated effects.</p>
           <p class="source-line">Source: <a id="source-link" href="https://esotericnotebook.com/planetary-magic/planets/sun" target="_blank" rel="noreferrer noopener">Solar Square and historical source ↗</a></p>
         </div>
-        <figure class="art-panel" id="solar-art"><img src="assets/solar-square-art.webp" alt="The exact six-by-six solar magic square illustrated in gold and ivory, framed by luminous geometric circles"><figcaption>A VISUAL INTERPRETATION · SOURCE NUMBERS PRESERVED</figcaption></figure>
+        <figure class="art-panel" id="solar-art"><img loading="lazy" decoding="async" src="assets/solar-square-art.webp" alt="The exact six-by-six solar magic square illustrated in gold and ivory, framed by luminous geometric circles"><figcaption>A VISUAL INTERPRETATION · SOURCE NUMBERS PRESERVED</figcaption></figure>
       </section>
 
     </main>

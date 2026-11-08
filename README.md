@@ -14,7 +14,7 @@ The laboratory generates normal magic squares of orders **3 through 12**, using 
 
 ## Explore
 
-Select an exhibit, then use **Inspect, Rows, Columns, Diagonals, Complements, Trace**. The editor updates the numeric grid, proof, historical explanation, and source link together. Complements are disabled for non-normal squares. Franklin's diagonal exception is explained explicitly. Mouse, touch and keyboard arrow navigation are available. Browser Back and Forward restore the selected exhibit. Dense mobile grids keep a minimum cell width and can scroll horizontally with an on-screen cue.
+Select an exhibit, then use **Inspect, Rows, Columns, Diagonals, Complements, Trace**. The editor updates the numeric grid, proof, historical explanation, and source link together. Complements are disabled for non-normal squares. Franklin's diagonal exception is explained explicitly. Mouse, touch and keyboard arrow navigation are available. Browser Back and Forward restore the selected exhibit. Dense mobile grids keep comfortably sized cells and can scroll horizontally with an on-screen cue.
 
 Direct links use `?square=jupiter`, `?square=durer`, or `?square=generated-10`. The no-JavaScript fallback retains the original complete 6×6 Solar exhibit.
 
@@ -34,6 +34,10 @@ No site runtime dependencies, third-party scripts, analytics, accounts or cookie
 - [National Gallery of Art — Dürer's *Melencolia I*](https://www.nga.gov/artworks/35101-melencolia-i).
 - [Mathematical Association of America — Lo Shu](https://journals.sagepub.com/doi/full/10.1177/2158244015585828).
 - [MacTutor — Benjamin Franklin](https://mathshistory.st-andrews.ac.uk/Biographies/Franklin_Benjamin/).
-- [*At Right Angles* — Ramanujan birthday-square discussion](https://publications.azimpremjiuniversity.edu.in/3104/1/ramanujans_honour_magic_square.pdf).
+- [*At Right Angles* — Ramanujan birthday-square discussion](https://publications.azimpremjiuniversity.edu.in/3104/).
 
 Planetary and symbolic correspondences are cultural history, not evidence of supernatural causation. The Solar artwork is illustrative, and source-grid values are verified from code. The repository is public; repository visibility does not imply any particular license grant.
+
+## Browser UX verification
+
+On a machine with Chrome/Chromium installed, run `node tests/browser-smoke.cjs`. This dependency-free browser audit covers all curated exhibits, generated orders 3–12, all six exploration modes, keyboard navigation, history, source labels and responsive layout checks at desktop, tablet and mobile sizes. GitHub Actions runs it on every pull request and release before publishing. The GitHub Pages delivery stage independently compares committed bytes with the live website.
