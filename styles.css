@@ -23,3 +23,38 @@ footer a{display:inline-flex;align-items:center;min-height:44px}
 .fallback h2{font-size:32px}.fallback p{color:var(--muted)}
 .fallback table{border-collapse:collapse;width:min(100%,520px);table-layout:fixed;font:22px Georgia,serif;text-align:center;color:var(--gold-light)}
 .fallback td{border:1px solid var(--hair);padding:10px 0}
+/* Collection navigation extends the existing dark, spare editorial design. */
+.collection{max-width:1100px;margin:0 auto 22px;padding:18px 0;border-top:1px solid var(--hair);border-bottom:1px solid var(--hair)}
+.collection-heading{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;color:var(--gold);font-size:10px;letter-spacing:.16em;margin-bottom:13px}
+.collection-heading span:last-child{color:#aba393;letter-spacing:.07em}
+.collection-options{display:flex;justify-content:center;flex-wrap:wrap;gap:8px}
+.collection-option{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:10px 14px;border:1px solid var(--hair);border-radius:3px;background:rgba(255,255,255,.025);color:#c8c1b2;min-height:44px;font-size:12px;cursor:pointer;transition:background .15s,border-color .15s}
+.collection-option:hover{border-color:#9d8259;color:#fff0d0}
+.collection-option.active{background:rgba(182,132,65,.22);border-color:#c7a56d;color:#ffe2a9}
+.option-symbol{font:22px Georgia,serif;color:var(--gold)}
+.collection-more{text-align:center;margin-top:12px}
+.collection-more summary{cursor:pointer;min-height:44px;display:inline-flex;align-items:center;gap:10px;justify-content:center;list-style:none;color:#b8aa96;font-size:12px}
+.collection-more summary::-webkit-details-marker{display:none}
+.collection-more[open] summary span{transform:rotate(45deg)}
+.collection-more .collection-options{margin:13px auto 14px}
+.lab-controls{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:11px;margin-top:10px}
+.lab-controls label{font-size:12px;color:#a9a197}
+.lab-controls select{background:#17191b;color:#f2dcba;border:1px solid var(--hair);font:inherit;min-height:44px;padding:8px 11px}
+.lab-controls .small-action{min-height:44px}
+.collection-note{font-size:11px;line-height:1.7;color:#929087;max-width:570px;margin:15px auto 0}
+.square{grid-template-columns:repeat(var(--order,6),minmax(0,1fr));grid-template-rows:repeat(var(--order,6),minmax(0,1fr))}
+.square .cell{border-right:1px solid rgba(211,170,97,.22);border-bottom:1px solid rgba(211,170,97,.22)}
+.square[data-order="8"] .cell,.square[data-order="9"] .cell{font-size:clamp(12px,2vw,24px)}
+.square[data-order="10"] .cell,.square[data-order="11"] .cell,.square[data-order="12"] .cell{font-size:clamp(12px,1.5vw,20px)}
+.mode:disabled{opacity:.35;cursor:not-allowed}
+.context-era{text-transform:uppercase;color:var(--gold)!important;letter-spacing:.12em;font-size:10px!important}
+.context-section.context-solo{display:block;max-width:820px;margin-inline:auto}
+#solar-art[hidden]{display:none}
+.equation{white-space:normal}
+@media(max-width:600px){.collection-heading{justify-content:center;text-align:center;line-height:1.8}
+.collection-option{padding:9px 8px;flex:1 1 27%;max-width:170px;font-size:11px}
+.option-symbol{font-size:18px}.lab-controls label{width:100%}
+.square[data-order="7"] .cell{font-size:clamp(14px,4vw,22px)}
+.square[data-order="8"] .cell,.square[data-order="9"] .cell{font-size:clamp(11px,3.2vw,17px)}
+.square-frame.large-order{overflow-x:auto}.square-frame.large-order .square{min-width:475px}
+}
