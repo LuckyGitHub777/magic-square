@@ -73,3 +73,18 @@ test('minimal no-JavaScript fallback preserves every source-grid cell', () => {
   assert.ok(html.indexOf('<noscript>') < html.indexOf('<section class="workbench"'));
   assert.match(fallback, /<style>\.workbench\{display:none\}<\/style>/);
 });
+
+test('atlas navigation is history-aware, horizontally legible and avoids six-column border seams', () => {
+  const app=read('app.js').toString();
+  const css=read('styles.css').toString();
+  assert.match(app, /history\.pushState/);
+  assert.match(app, /addEventListener\('popstate'/);
+  assert.match(html, /id="scroll-hint"/);
+  assert.match(app, /getElementById\('scroll-hint'\)\.hidden=n<7/);
+  assert.match(css, /min-width:calc\(var\(--order\) \* 44px\)/);
+  assert.match(css, /\.square\{gap:1px/);
+  assert.doesNotMatch(css, /\.cell:nth-child\(6n\)/);
+  assert.doesNotMatch(css, /\.cell:nth-last-child\(-n\+6\)/);
+  assert.match(css, /prefers-reduced-motion/);
+  assert.match(css, /focus-visible/);
+});

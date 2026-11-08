@@ -534,7 +534,7 @@
     ],
     "normal": true,
     "semimagic": false,
-    "sourceUrl": "https://old.maa.org/press/periodicals/convergence/the-magic-squares-of-manuel-moschopoulos-magic-squares-before-moschopoulos",
+    "sourceUrl": "https://journals.sagepub.com/doi/full/10.1177/2158244015585828",
     "description": "The Lo Shu is a central Chinese example of a 3×3 magic square. Its history is distinct from the later Saturn correspondence; claims of very ancient dates are legendary."
   },
   {
@@ -701,7 +701,7 @@
     ],
     "normal": false,
     "semimagic": false,
-    "sourceUrl": "https://apfstatic.s3.ap-south-1.amazonaws.com/s3fs-public/ramanujans_honour_magic_square.pdf",
+    "sourceUrl": "https://publications.azimpremjiuniversity.edu.in/3104/1/ramanujans_honour_magic_square.pdf",
     "description": "A birthday square widely attributed to Ramanujan, encoding 22 December 1887 in the first row; all ordinary lines sum to 139. Attribution is discussed in mathematical literature."
   }
 ];

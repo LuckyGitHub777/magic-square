@@ -26,7 +26,7 @@
     state.exhibit=next;state.mode='focus';state.number=null;state.traceCount=1;
     const url=new URL(window.location.href);
     if(id==='sun')url.searchParams.delete('square');else url.searchParams.set('square',id);
-    window.history.replaceState(null,'',url.pathname+url.search+url.hash);
+    window.history.pushState({ square: id },'',url.pathname+url.search+url.hash);
     build();
   }
   function build(){
@@ -55,7 +55,9 @@
     square.replaceChildren(fragment,svg);
     square.style.setProperty('--order',n);square.dataset.order=n;
     square.setAttribute('aria-label','Interactive '+n+' by '+n+' '+e.name+' magic-square study');
-    frame.classList.toggle('large-order',n>=10);
+    frame.classList.toggle('large-order',n>=7);
+    document.getElementById('scroll-hint').hidden=n<7;
+    document.title='Magic Square · '+e.name;
     put('square-label',e.name.toUpperCase());
     put('square-range',n*n+' ENTRIES · '+(e.normal?'1–'+n*n:'CUSTOM INTEGERS'));
     put('metric-order',n+' × '+n);put('metric-constant',proof.magicConstant);
@@ -158,5 +160,11 @@
   document.getElementById('trace-prev').addEventListener('click',()=>{state.traceCount=Math.max(1,state.traceCount-1);render();});
   document.getElementById('trace-next').addEventListener('click',()=>{state.traceCount=Math.min(ordered.length,state.traceCount+1);render();});
   window.addEventListener('resize',trace);
+  window.addEventListener('popstate',()=>{
+    const id=new URLSearchParams(window.location.search).get('square');
+    const exhibit=getExhibit(id)||getExhibit('sun');
+    state.exhibit=exhibit;state.mode='focus';state.number=null;state.traceCount=1;
+    build();
+  });
   build();
 })();
