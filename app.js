@@ -23,6 +23,7 @@
   document.getElementById('generate-button').addEventListener('click',()=>choose('generated-'+document.getElementById('generator-order').value));
   function choose(id){
     const next=getExhibit(id);if(!next)return;
+    if(state.exhibit.id===id){state.mode='focus';state.number=null;state.traceCount=1;build();return;}
     state.exhibit=next;state.mode='focus';state.number=null;state.traceCount=1;
     const url=new URL(window.location.href);
     if(id==='sun')url.searchParams.delete('square');else url.searchParams.set('square',id);
@@ -31,7 +32,7 @@
   }
   function build(){
     const e=state.exhibit,g=e.grid,n=g.length,proof=verify(g,e);
-    if(!proof.valid){document.querySelector('.status').textContent='CHECK FAILED';put('check-status','Dataset verification failed');return;}
+    if(!proof.valid){put('verification-status','CHECK FAILED');put('check-status','Dataset verification failed');return;}
     ordered=g.flat().slice().sort((a,b)=>a-b);
     const fragment=document.createDocumentFragment();cells=[];
     g.forEach((row,r)=>row.forEach((value,c)=>{
@@ -54,16 +55,16 @@
     }));
     square.replaceChildren(fragment,svg);
     square.style.setProperty('--order',n);square.dataset.order=n;
-    square.setAttribute('aria-label','Interactive '+n+' by '+n+' '+e.name+' magic-square study');
+    square.setAttribute('aria-label','Interactive '+n+' by '+n+' '+e.name+(e.semimagic?' semimagic-square study':' magic-square study'));
     frame.classList.toggle('large-order',n>=7);
     document.getElementById('scroll-hint').hidden=n<7;
     document.title='Magic Square · '+e.name;
-    put('square-label',e.name.toUpperCase());
+    put('square-label','02 / '+e.name.toUpperCase());put('panel-symbol',e.symbol);
     put('square-range',n*n+' ENTRIES · '+(e.normal?'1–'+n*n:'CUSTOM INTEGERS'));
     put('metric-order',n+' × '+n);put('metric-constant',proof.magicConstant);
     put('metric-total',proof.total.toLocaleString('en-US'));
     put('check-status',e.semimagic?(2*n)+' verified rows/columns · straight diagonals differ':(2*n+2)+' equal-sum lines independently checked');
-    document.querySelector('.status').textContent='✓ VERIFIED';
+    put('verification-status','VERIFIED');
     put('collection-description',e.name+' · '+n+'×'+n+' · Σ '+proof.magicConstant);
     put('constant-equation',proof.total.toLocaleString('en-US')+' ÷ '+n+' = '+proof.magicConstant);
     put('constant-copy','The '+n*n+' entries total '+proof.total.toLocaleString('en-US')+'. Each balanced row and column returns '+proof.magicConstant+'.');
@@ -71,7 +72,7 @@
     put('complement-copy',e.normal?'The numbers 1 through '+(n*n)+' pair arithmetically to '+(n*n+1)+'. These partners need not be opposite cells.':'This design uses nonconsecutive values; the normal complement formula does not apply.');
     put('context-title',e.group==='planetary'?'The square and its story.':'The design and its story.');
     put('context-era',e.tagline);put('context-description',e.description);
-    const link=document.getElementById('source-link');link.href=e.sourceUrl;link.textContent='Historical or mathematical reference ↗';
+    const link=document.getElementById('source-link');link.href=e.sourceUrl;link.textContent=e.name+' · source and context ↗';
     document.getElementById('solar-art').hidden=e.id!=='sun';
     document.getElementById('context').classList.toggle('context-solo',e.id!=='sun');
     document.getElementById('mode-pairs').disabled=!e.normal;

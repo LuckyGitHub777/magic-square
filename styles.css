@@ -61,7 +61,7 @@ footer a{display:inline-flex;align-items:center;min-height:44px}
 .square[data-order="7"] .cell{font-size:clamp(14px,4vw,22px)}
 .square[data-order="8"] .cell,.square[data-order="9"] .cell{font-size:clamp(11px,3.2vw,17px)}
 .square-frame.large-order{overflow-x:auto;scrollbar-width:thin;scrollbar-color:#96754b #1d1f20}
-.square-frame.large-order .square{min-width:calc(var(--order) * 44px)}
+.square-frame.large-order .square{min-width:calc(var(--order) * 46px + 3px)}
 .mobile-scroll-hint:not([hidden]){display:block}
 }
 
@@ -71,3 +71,9 @@ footer a{display:inline-flex;align-items:center;min-height:44px}
 }
 @media(hover:hover){.collection-option:hover,.cell:hover{transition-duration:.16s}}
 @media(max-width:600px){.square-frame.large-order{overscroll-behavior-x:contain;scroll-snap-type:none}}
+
+/* Editorial alignment and legible status while preserving the existing visual language. */
+.context-section.context-solo .context-copy{max-width:720px;margin-inline:auto;text-align:center}
+.context-section.context-solo .eyebrow.small{justify-content:center}
+.context-section.context-solo .context-copy p:not(.context-era):not(.source-line){max-width:650px;margin-inline:auto}
+#verification-status{white-space:nowrap}
