@@ -1,174 +1,162 @@
 (function () {
   'use strict';
-  const { GRID, SIZE, MAGIC_CONSTANT, findNumber, analyze, sum } = window.SolarSquare;
-  const square = document.getElementById('square');
-  const kicker = document.getElementById('inspector-kicker');
-  const headline = document.getElementById('inspector-headline');
-  const body = document.getElementById('inspector-body');
-  const result = document.getElementById('inspector-sum');
-  const traceActions = document.getElementById('trace-actions');
-  const modes = Array.from(document.querySelectorAll('[data-mode]'));
-  const state = { mode: 'focus', number: null, traceCount: 1 };
-
-  const cells = [];
-  GRID.forEach((row, r) => row.forEach((number, c) => {
-    const cell = document.createElement('button');
-    cell.type = 'button';
-    cell.className = 'cell';
-    cell.textContent = number;
-    cell.dataset.row = r;
-    cell.dataset.col = c;
-    cell.dataset.number = number;
-    cell.setAttribute('aria-label', `Number ${number}, row ${r + 1}, column ${c + 1}`);
-    cell.addEventListener('click', () => {
-      if (state.mode === 'trace') state.traceCount = number;
-      else state.number = number;
-      render();
-    });
-    cell.addEventListener('keydown', event => {
-      const moves = { ArrowUp: [-1, 0], ArrowDown: [1, 0], ArrowLeft: [0, -1], ArrowRight: [0, 1] };
-      const move = moves[event.key];
-      if (!move) return;
-      event.preventDefault();
-      const nextRow = Math.max(0, Math.min(SIZE - 1, r + move[0]));
-      const nextCol = Math.max(0, Math.min(SIZE - 1, c + move[1]));
-      cells[nextRow * SIZE + nextCol].focus();
-    });
-    square.appendChild(cell);
-    cells.push(cell);
-  }));
-
-  const svgNS = 'http://www.w3.org/2000/svg';
-  const svg = document.createElementNS(svgNS, 'svg');
-  svg.classList.add('trace-svg');
-  svg.setAttribute('aria-hidden', 'true');
-  square.appendChild(svg);
-
-  function setInspector(label, title, description, summation) {
-    kicker.textContent = label;
-    headline.textContent = title;
-    body.textContent = description;
-    result.textContent = summation;
+  const api=window.SolarSquare;
+  const {EXHIBITS,getExhibit,findNumber,verify,sum}=api;
+  const square=document.getElementById('square'),frame=document.querySelector('.square-frame');
+  const title=document.getElementById('inspector-headline'),body=document.getElementById('inspector-body');
+  const kicker=document.getElementById('inspector-kicker'),result=document.getElementById('inspector-sum');
+  const modeButtons=Array.from(document.querySelectorAll('[data-mode]'));
+  const state={exhibit:getExhibit(new URLSearchParams(window.location.search).get('square'))||getExhibit('sun'),mode:'focus',number:null,traceCount:1};
+  const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg');
+  svg.classList.add('trace-svg');svg.setAttribute('aria-hidden','true');
+  let cells=[],ordered=[];
+  const put=(id,value)=>{document.getElementById(id).textContent=String(value);};
+  const inspect=(a,b,c,d)=>{kicker.textContent=a;title.textContent=b;body.textContent=c;result.textContent=d;};
+  const groups={planetary:document.getElementById('planetary-switcher'),masterpiece:document.getElementById('historic-switcher')};
+  for(const e of EXHIBITS) {
+    const button=document.createElement('button');button.type='button';button.className='collection-option';
+    button.dataset.exhibit=e.id;button.setAttribute('aria-pressed','false');
+    const symbol=document.createElement('span');symbol.className='option-symbol';symbol.textContent=e.symbol;symbol.setAttribute('aria-hidden','true');
+    const label=document.createElement('span');label.textContent=e.name;
+    button.append(symbol,label);button.addEventListener('click',()=>choose(e.id));groups[e.group].appendChild(button);
   }
-
-  function drawTrace() {
-    svg.replaceChildren();
-    if (state.mode !== 'trace') return;
-    svg.setAttribute('viewBox', `0 0 ${square.clientWidth} ${square.clientHeight}`);
-    const points = Array.from({ length: state.traceCount }, (_, i) => {
-      const { row, col } = findNumber(i + 1);
-      const cell = cells[row * SIZE + col];
-      return { x: cell.offsetLeft + cell.offsetWidth / 2, y: cell.offsetTop + cell.offsetHeight / 2 };
-    });
-    const shape = document.createElementNS(svgNS, 'polyline');
-    shape.setAttribute('points', points.map(p => `${p.x},${p.y}`).join(' '));
-    shape.setAttribute('fill', 'none');
-    shape.setAttribute('stroke', '#f3cd7f');
-    shape.setAttribute('stroke-opacity', '.82');
-    shape.setAttribute('stroke-width', '2');
-    shape.setAttribute('stroke-linejoin', 'round');
-    shape.setAttribute('stroke-linecap', 'round');
-    svg.appendChild(shape);
-    const last = points[points.length - 1];
-    const dot = document.createElementNS(svgNS, 'circle');
-    dot.setAttribute('cx', last.x); dot.setAttribute('cy', last.y);
-    dot.setAttribute('r', '5'); dot.setAttribute('fill', '#ffe1a1');
-    svg.appendChild(dot);
+  document.getElementById('generate-button').addEventListener('click',()=>choose('generated-'+document.getElementById('generator-order').value));
+  function choose(id){
+    const next=getExhibit(id);if(!next)return;
+    state.exhibit=next;state.mode='focus';state.number=null;state.traceCount=1;
+    const url=new URL(window.location.href);
+    if(id==='sun')url.searchParams.delete('square');else url.searchParams.set('square',id);
+    window.history.replaceState(null,'',url.pathname+url.search+url.hash);
+    build();
   }
-
-  function render() {
-    const { mode, number } = state;
-    modes.forEach(b => {
-      const active = b.dataset.mode === mode;
-      b.classList.toggle('active', active);
-      b.setAttribute('aria-pressed', String(active));
+  function build(){
+    const e=state.exhibit,g=e.grid,n=g.length,proof=verify(g,e);
+    if(!proof.valid){document.querySelector('.status').textContent='CHECK FAILED';put('check-status','Dataset verification failed');return;}
+    ordered=g.flat().slice().sort((a,b)=>a-b);
+    const fragment=document.createDocumentFragment();cells=[];
+    g.forEach((row,r)=>row.forEach((value,c)=>{
+      const cell=document.createElement('button');cell.type='button';cell.className='cell';
+      cell.textContent=value;cell.dataset.row=r;cell.dataset.col=c;cell.dataset.number=value;
+      cell.tabIndex=c===0&&r===0?0:-1;
+      cell.setAttribute('aria-label','Number '+value+', row '+(r+1)+', column '+(c+1));
+      cell.addEventListener('click',()=>{
+        if(state.mode==='trace')state.traceCount=ordered.indexOf(value)+1;
+        else state.number=value;
+        cells.forEach(item=>{item.tabIndex=item===cell?0:-1;});render();
+      });
+      cell.addEventListener('keydown',ev=>{
+        const moves={ArrowUp:[-1,0],ArrowDown:[1,0],ArrowLeft:[0,-1],ArrowRight:[0,1]};
+        if(!moves[ev.key])return;ev.preventDefault();
+        const [dr,dc]=moves[ev.key],rr=Math.max(0,Math.min(n-1,r+dr)),cc=Math.max(0,Math.min(n-1,c+dc));
+        const index=rr*n+cc;cells.forEach((item,i)=>{item.tabIndex=i===index?0:-1;});cells[index].focus();
+      });
+      fragment.appendChild(cell);cells.push(cell);
+    }));
+    square.replaceChildren(fragment,svg);
+    square.style.setProperty('--order',n);square.dataset.order=n;
+    square.setAttribute('aria-label','Interactive '+n+' by '+n+' '+e.name+' magic-square study');
+    frame.classList.toggle('large-order',n>=10);
+    put('square-label',e.name.toUpperCase());
+    put('square-range',n*n+' ENTRIES · '+(e.normal?'1–'+n*n:'CUSTOM INTEGERS'));
+    put('metric-order',n+' × '+n);put('metric-constant',proof.magicConstant);
+    put('metric-total',proof.total.toLocaleString('en-US'));
+    put('check-status',e.semimagic?(2*n)+' verified rows/columns · straight diagonals differ':(2*n+2)+' equal-sum lines independently checked');
+    document.querySelector('.status').textContent='✓ VERIFIED';
+    put('collection-description',e.name+' · '+n+'×'+n+' · Σ '+proof.magicConstant);
+    put('constant-equation',proof.total.toLocaleString('en-US')+' ÷ '+n+' = '+proof.magicConstant);
+    put('constant-copy','The '+n*n+' entries total '+proof.total.toLocaleString('en-US')+'. Each balanced row and column returns '+proof.magicConstant+'.');
+    put('complement-equation',e.normal?'a + ('+(n*n+1)+' − a) = '+(n*n+1):'Custom-number design');
+    put('complement-copy',e.normal?'The numbers 1 through '+(n*n)+' pair arithmetically to '+(n*n+1)+'. These partners need not be opposite cells.':'This design uses nonconsecutive values; the normal complement formula does not apply.');
+    put('context-title',e.group==='planetary'?'The square and its story.':'The design and its story.');
+    put('context-era',e.tagline);put('context-description',e.description);
+    const link=document.getElementById('source-link');link.href=e.sourceUrl;link.textContent='Historical or mathematical reference ↗';
+    document.getElementById('solar-art').hidden=e.id!=='sun';
+    document.getElementById('context').classList.toggle('context-solo',e.id!=='sun');
+    document.getElementById('mode-pairs').disabled=!e.normal;
+    document.getElementById('mode-pairs').title=e.normal?'':'Only applicable to normal 1–n² squares';
+    put('mode-trace',e.normal?'Trace 1 → '+(n*n):'Trace values');
+    document.querySelectorAll('[data-exhibit]').forEach(button=>{
+      const active=button.dataset.exhibit===e.id;button.classList.toggle('active',active);
+      button.setAttribute('aria-pressed',String(active));
     });
-    const selected = number === null ? null : findNumber(number);
-    const complement = number === null ? null : 37 - number;
-    cells.forEach(cell => {
-      const r = +cell.dataset.row, c = +cell.dataset.col, n = +cell.dataset.number;
-      let active = false, secondary = false;
-      if (mode === 'focus' && selected) {
-        active = selected.row === r || selected.col === c;
-      } else if (mode === 'rows') {
-        active = r === (selected?.row ?? 0);
-      } else if (mode === 'columns') {
-        active = c === (selected?.col ?? 0);
-      } else if (mode === 'diagonals') {
-        active = r === c || r + c === SIZE - 1;
-      } else if (mode === 'pairs' && number !== null) {
-        active = n === number || n === complement;
-      } else if (mode === 'trace') {
-        secondary = n <= state.traceCount;
-      }
-      cell.classList.toggle('active', active);
-      cell.classList.toggle('secondary', secondary);
-      cell.classList.toggle('selected', number !== null && n === number && mode !== 'trace');
-      cell.setAttribute('aria-pressed', String(number !== null && n === number && mode !== 'trace'));
+    if(e.group!=='planetary')document.getElementById('additional-collection').open=true;
+    render();
+  }
+  function trace(){
+    svg.replaceChildren();if(state.mode!=='trace')return;
+    svg.setAttribute('viewBox','0 0 '+square.clientWidth+' '+square.clientHeight);
+    const grid=state.exhibit.grid,n=grid.length;
+    const points=ordered.slice(0,state.traceCount).map(value=>{
+      const {row,col}=findNumber(value,grid),cell=cells[row*n+col];
+      return [cell.offsetLeft+cell.offsetWidth/2,cell.offsetTop+cell.offsetHeight/2];
     });
-    traceActions.hidden = mode !== 'trace';
-    if (mode === 'trace') {
-      document.getElementById('trace-prev').disabled = state.traceCount <= 1;
-      document.getElementById('trace-next').disabled = state.traceCount >= 36;
-      setInspector('IV / PATH THROUGH THE GRID', `1 → ${state.traceCount}`,
-        'Use Previous and Next, or select any numbered cell to trace directly to it. The path shows placement, not a supernatural mechanism.',
-        `${state.traceCount} of 36 positions traced`);
-    } else if (mode === 'rows') {
-      const r = selected?.row ?? 0;
-      setInspector('I / ROW STRUCTURE', `Row ${r + 1} = 111`,
-        `Row ${r + 1}: ${GRID[r].join(' + ')}. Select any cell to inspect another row.`,
-        `${GRID[r].join(' + ')} = ${sum(GRID[r])}`);
-    } else if (mode === 'columns') {
-      const c = selected?.col ?? 0, items = GRID.map(row => row[c]);
-      setInspector('II / COLUMN STRUCTURE', `Column ${c + 1} = 111`,
-        `Column ${c + 1}: ${items.join(' + ')}. Select any cell to inspect another column.`,
-        `${items.join(' + ')} = ${sum(items)}`);
-    } else if (mode === 'diagonals') {
-      const d1 = GRID.map((row, r) => row[r]), d2 = GRID.map((row, r) => row[SIZE - 1 - r]);
-      setInspector('III / THE DIAGONALS', 'Two directions. One sum.',
-        `Primary diagonal: ${d1.join(' + ')}. Opposite diagonal: ${d2.join(' + ')}.`,
-        `${sum(d1)} = ${sum(d2)} = ${MAGIC_CONSTANT}`);
-    } else if (mode === 'pairs') {
-      if (number === null) {
-        setInspector('IV / COMPLEMENTARY PAIRS', 'Every number has a partner.',
-          'Choose any number to illuminate its complement, calculated as 37 minus the selected number.',
-          'Examples: 1 + 36 = 37 · 2 + 35 = 37');
-      } else {
-        setInspector('IV / COMPLEMENTARY PAIRS', `${number} + ${complement} = 37`,
-          'The complement is based on arithmetic, not necessarily a geometrically opposite cell.',
-          `37 − ${number} = ${complement}`);
-      }
-    } else if (number !== null) {
-      const { row, col } = selected;
-      setInspector('SELECTED NUMBER', `${number} · Row ${row + 1}, Column ${col + 1}`,
-        `The row containing ${number} and the column containing ${number} both equal the same invariant.`,
-        `Row = ${sum(GRID[row])}  ·  Column = ${sum(GRID.map(r => r[col]))}`);
-    } else {
-      setInspector('THE INVARIANT', 'Every line returns to 111.',
-        'Select a number to illuminate its row and column. Explore every line, complementary pair, or the full numerical journey.',
-        '6 rows + 6 columns + 2 main diagonals = 14 verified lines.');
+    const poly=document.createElementNS(ns,'polyline');
+    poly.setAttribute('points',points.map(p=>p.join(',')).join(' '));poly.setAttribute('fill','none');
+    poly.setAttribute('stroke','#f3cd7f');poly.setAttribute('stroke-width','2');
+    poly.setAttribute('stroke-linecap','round');poly.setAttribute('stroke-linejoin','round');
+    svg.appendChild(poly);
+    const last=points.at(-1);if(!last)return;
+    const dot=document.createElementNS(ns,'circle');dot.setAttribute('cx',last[0]);dot.setAttribute('cy',last[1]);
+    dot.setAttribute('r','5');dot.setAttribute('fill','#ffe1a1');svg.appendChild(dot);
+  }
+  function render(){
+    const e=state.exhibit,g=e.grid,n=g.length,{mode,number}=state;
+    const constant=verify(g,e).magicConstant,selected=number===null?null:findNumber(number,g);
+    const paired=number===null?null:n*n+1-number;
+    const seen=new Set(ordered.slice(0,state.traceCount));
+    modeButtons.forEach(button=>{const on=button.dataset.mode===mode;button.classList.toggle('active',on);button.setAttribute('aria-pressed',String(on));});
+    cells.forEach(cell=>{
+      const r=+cell.dataset.row,c=+cell.dataset.col,v=+cell.dataset.number;
+      let active=false;
+      if(mode==='focus'&&selected)active=r===selected.row||c===selected.col;
+      else if(mode==='rows')active=r===(selected?.row??0);
+      else if(mode==='columns')active=c===(selected?.col??0);
+      else if(mode==='diagonals')active=r===c||r+c===n-1;
+      else if(mode==='pairs'&&number!==null)active=v===number||v===paired;
+      cell.classList.toggle('active',active);
+      cell.classList.toggle('secondary',mode==='trace'&&seen.has(v));
+      cell.classList.toggle('selected',number===v&&mode!=='trace');
+      cell.setAttribute('aria-pressed',String(number===v&&mode!=='trace'));
+    });
+    document.getElementById('trace-actions').hidden=mode!=='trace';
+    if(mode==='trace'){
+      document.getElementById('trace-prev').disabled=state.traceCount<=1;
+      document.getElementById('trace-next').disabled=state.traceCount>=n*n;
+      inspect('PATH THROUGH THE GRID','Through '+ordered[state.traceCount-1],
+        'Follow the sorted numerical path by selecting any number or using Previous and Next. The path is a visualization, not a supernatural effect.',
+        state.traceCount+' of '+n*n+' positions traced');
+    }else if(mode==='rows'){
+      const r=selected?.row??0;inspect('ROW STRUCTURE','Row '+(r+1)+' = '+constant,'Select a different row to compare.',g[r].join(' + ')+' = '+sum(g[r]));
+    }else if(mode==='columns'){
+      const c=selected?.col??0,a=g.map(row=>row[c]);inspect('COLUMN STRUCTURE','Column '+(c+1)+' = '+constant,'Select a different column to compare.',a.join(' + ')+' = '+sum(a));
+    }else if(mode==='diagonals'){
+      const a=sum(g.map((r,i)=>r[i])),b=sum(g.map((r,i)=>r[n-1-i]));
+      inspect(e.semimagic?'THE EXCEPTION':'TWO DIAGONALS',
+        e.semimagic?'Franklin is semimagic.':'Two directions. One sum.',
+        e.semimagic?'The straight diagonals differ from the row-and-column invariant. Franklin studied special bent diagonals.':'Both main diagonals equal the ordinary magic constant.',
+        a+' and '+b+(e.semimagic?' · rows = '+constant:''));
+    }else if(mode==='pairs'){
+      inspect('COMPLEMENTARY PAIRS',number===null?'Every number has a partner.':number+' + '+paired+' = '+(n*n+1),
+        'The arithmetic complement is '+(n*n+1)+' minus the selected value; partners need not occupy opposite cells.',
+        number===null?'Select any cell.':(n*n+1)+' − '+number+' = '+paired);
+    }else if(number!==null){
+      const {row,col}=selected;
+      inspect('SELECTED NUMBER',number+' · Row '+(row+1)+', Column '+(col+1),
+        'Its row and column share the same invariant.','Row = '+sum(g[row])+' · Column = '+sum(g.map(r=>r[col])));
+    }else{
+      inspect('THE INVARIANT',e.semimagic?'Every row and column = '+constant+'.':'Every line returns to '+constant+'.',
+        'Select a number to illuminate its row and column, or choose a structural exploration mode.',
+        e.semimagic?n+' rows + '+n+' columns; straight diagonals are exceptional.':n+' rows + '+n+' columns + 2 diagonals = '+(2*n+2)+' equal lines.');
     }
-    drawTrace();
+    trace();
   }
-  modes.forEach(button => button.addEventListener('click', () => {
-    state.mode = button.dataset.mode;
-    if (state.mode === 'trace') { state.traceCount = 1; state.number = null; }
+  modeButtons.forEach(button=>button.addEventListener('click',()=>{
+    if(button.disabled)return;state.mode=button.dataset.mode;
+    if(state.mode==='trace'){state.traceCount=1;state.number=null;}
     render();
   }));
-  document.getElementById('trace-prev').addEventListener('click', () => {
-    state.traceCount = Math.max(1, state.traceCount - 1); render();
-  });
-  document.getElementById('trace-next').addEventListener('click', () => {
-    state.traceCount = Math.min(36, state.traceCount + 1); render();
-  });
-  window.addEventListener('resize', drawTrace);
-  const check = analyze();
-  const status = document.getElementById('check-status');
-  if (!check.valid || check.magicConstant !== MAGIC_CONSTANT || check.total !== 666) {
-    status.textContent = 'Verification failure: please inspect source data';
-    status.style.color = '#ffad91';
-    document.querySelector('.status').textContent = 'CHECK FAILED';
-  }
-  render();
+  document.getElementById('trace-prev').addEventListener('click',()=>{state.traceCount=Math.max(1,state.traceCount-1);render();});
+  document.getElementById('trace-next').addEventListener('click',()=>{state.traceCount=Math.min(ordered.length,state.traceCount+1);render();});
+  window.addEventListener('resize',trace);
+  build();
 })();
-

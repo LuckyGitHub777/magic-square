@@ -1,39 +1,39 @@
 # Magic Square
 
-An interactive exploration of number, geometry, and mathematical constancy. The first experience is **The Solar Square** — a 6 × 6 magic square with the integers 1 through 36.
+A single, carefully curated interactive atlas of mathematical order, historic designs and symbolic traditions.
 
-**[Explore the live experience](https://luckygithub777.github.io/magic-square/)**
+**[Explore the live atlas](https://luckygithub777.github.io/magic-square/)**
 
-| Grid | Each row, column, and main diagonal | Total |
-| :---: | :---: | :---: |
-| 6 × 6 | 111 | 666 |
+## Collection
+
+The **seven classical planetary magic squares** (Saturn 3×3 through Moon 9×9) can be selected inside the existing interactive Solar Square explorer. The 6×6 Solar exhibit preserves the original site's exact reflected arrangement: its 14 ordinary lines sum to 111 and all 36 entries total 666.
+
+The expandable historical collection includes the Chinese Lo Shu; the 1514 Dürer square from *Melencolia I*; Benjamin Franklin's 8×8 **semimagic** square (rows and columns are equal, ordinary diagonals are not); and a non-normal birthday square associated with Srinivasa Ramanujan (constant 139, top row encoding 22 December 1887).
+
+The laboratory generates normal magic squares of orders **3 through 12**, using the Siamese algorithm, the doubly-even complement construction and the singly-even quadrant-swap construction. Automated mathematics tests validate those methods through order **19**.
 
 ## Explore
 
-Select any of the 36 numbers to inspect its position, or switch between six modes: **Inspect**, **Rows**, **Columns**, **Diagonals**, **Complements**, and **Trace**. The trace reveals the positions of 1 through 36 in order. Use the keyboard arrow keys to navigate the square.
+Select an exhibit, then use **Inspect, Rows, Columns, Diagonals, Complements, Trace**. The editor updates the numeric grid, proof, historical explanation, and source link together. Complements are disabled for non-normal squares. Franklin's diagonal exception is explained explicitly. Mouse, touch and keyboard arrow navigation are available. On narrow screens the largest grids scroll horizontally rather than reducing buttons to unreadable sizes.
 
-The experience adapts to desktop and mobile. A readable static grid is provided when JavaScript is disabled.
+Direct links use `?square=jupiter`, `?square=durer`, or `?square=generated-10`. The no-JavaScript fallback retains the original complete 6×6 Solar exhibit.
 
-## Verify
+## Verification
 
-No installation or third-party application dependencies are needed to use the page. To run the repository checks locally with Node.js 18 or later:
+`square.js` preserves the original `GRID` constant and `analyze()` API and adds `EXHIBITS`, `verify()`, `generate()`, and `getExhibit()`. The tests verify all historical tables, normal and non-normal cases, Franklin's semimagic exception, and constructed squares across all three parity classes.
 
 ```sh
 node --test
 ```
 
-The tests verify the exact numerical arrangement, all 14 equal-sum lines, unique values, complementary pairs, image and asset paths, and publication structure.
+No site runtime dependencies, third-party scripts, analytics, accounts or cookies are used. GitHub Pages staging still publishes only the approved static assets and checks production bytes against each release.
 
-## History and interpretation
+## Sources and boundaries
 
-This grid is a horizontal reflection of a traditional **Magic Square of the Sun**, historically associated with Cornelius Agrippa's *Three Books of Occult Philosophy* (Book II, Chapter 22). The reflection preserves the magic sums. The visual artwork is illustrative; `square.js` is the mathematical source of truth.
+- [Agrippa's seven planetary tables](https://esotericnotebook.com/correspondences/squares), Book II chapter 22.
+- [National Gallery of Art — Dürer's *Melencolia I*](https://www.nga.gov/artworks/35101-melencolia-i).
+- [Mathematical Association of America — Lo Shu](https://old.maa.org/press/periodicals/convergence/the-magic-squares-of-manuel-moschopoulos-magic-squares-before-moschopoulos).
+- [MacTutor — Benjamin Franklin](https://mathshistory.st-andrews.ac.uk/Biographies/Franklin_Benjamin/).
+- [*At Right Angles* — Ramanujan birthday-square discussion](https://apfstatic.s3.ap-south-1.amazonaws.com/s3fs-public/ramanujans_honour_magic_square.pdf).
 
-[Historical reference and source arrangement](https://esotericnotebook.com/planetary-magic/planets/sun)
-
-Planetary and symbolic associations are cultural history, not evidence of supernatural causation.
-
-## Design and delivery
-
-Built with vanilla HTML, CSS, and JavaScript. There is no application server, database, account system, analytics, cookie tracking, runtime package dependency, or external script. GitHub Actions runs the tests, publishes only the necessary static site assets, and verifies that production files match the committed release.
-
-The website is public. Repository visibility and redistribution rights are separate questions; no license grant is implied by public access.
+Planetary and symbolic correspondences are cultural history, not evidence of supernatural causation. The Solar artwork is illustrative, and source-grid values are verified from code. The repository is public; repository visibility does not imply any particular license grant.

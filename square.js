@@ -748,7 +748,7 @@
   }
   function getExhibit(id) {
     const named=EXHIBITS.find(e=>e.id===id);if(named)return named;
-    const match=/^generated-(\\d+)$/.exec(String(id));if(!match)return null;
+    const match=/^generated-(\d+)$/.exec(String(id));if(!match)return null;
     const n=Number(match[1]);if(!Number.isInteger(n)||n<3||n>12)return null;
     return {id:'generated-'+n,name:'Constructed · '+n+'×'+n,symbol:'□',group:'laboratory',tagline:'Mathematical construction',
       grid:generate(n),normal:true,semimagic:false,sourceUrl:'https://mathworld.wolfram.com/MagicSquare.html',
