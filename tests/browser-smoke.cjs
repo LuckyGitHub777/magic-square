@@ -21,6 +21,20 @@ const probe=String.raw`
    check(cells.filter(c=>c.tabIndex===0).length===1,'Roving focus '+id);
    check(by('mode-pairs').disabled===!item.normal,'Complements '+id);
    check(by('source-link').textContent.includes(item.name),'Source name '+id);
+   check(by('source-link').getAttribute('href')===item.sourceUrl,'Source destination '+id);
+   const selected=q('[data-exhibit="'+id+'"]');
+   if(selected) {
+     check(selected.getAttribute('aria-pressed')==='true','Current collection item '+id);
+     check(selected.classList.contains('active'),'Collection active class '+id);
+     check([...document.querySelectorAll('[data-exhibit].active')].length===1,'Multiple named active items '+id);
+   } else check([...document.querySelectorAll('[data-exhibit].active')].length===0,'Unexpected named active item '+id);
+   if(item.group==='planetary')check(!by('additional-collection').open,'Historical drawer left open for '+id);
+   if(item.group==='masterpiece')check(by('additional-collection').open,'Masterpiece drawer closed '+id);
+   if(item.group==='laboratory') {
+     check(by('additional-collection').open,'Laboratory drawer closed '+id);
+     check(!by('laboratory-state').hidden,'Laboratory marker hidden '+id);
+     check(by('laboratory-state').textContent.includes(n+' × '+n),'Laboratory marker incorrect '+id);
+   }else check(by('laboratory-state').hidden,'Stale laboratory marker '+id);
    check(document.title.includes(item.name),'Document title '+id);
    return cells;
  };
@@ -28,6 +42,10 @@ const probe=String.raw`
    inspect(new URLSearchParams(location.search).get('square')||'sun');
    by('additional-collection').open=true;
    for(const id of ['saturn','jupiter','mars','sun','venus','mercury','moon','lo-shu','durer','franklin','ramanujan']){choose(id);inspect(id)}
+   const navButtons=[...document.querySelectorAll('#planetary-switcher .collection-option')];
+   check(navButtons.length===7,'Planetary count');
+   check([...document.querySelectorAll('#historic-switcher .collection-option')].length===4,'Masterpiece count');
+   check(navButtons.every(button=>button.getBoundingClientRect().height>=44),'Small planetary touch target');
    choose('franklin');q('[data-mode="diagonals"]').click();
    check(by('inspector-headline').textContent.includes('semimagic'),'Franklin diagonal honesty');
    choose('sun');let cells=inspect('sun');cells[0].click();
@@ -45,6 +63,7 @@ const probe=String.raw`
    choose('durer');const previous=history.length;choose('durer');check(history.length===previous,'Duplicate history');
    choose('ramanujan');history.back();await new Promise(r=>setTimeout(r,180));inspect('durer');
    choose('moon');cells=inspect('moon');
+   check(by('collection-description').textContent.includes('Planetary'),'Collection type');
    if(innerWidth<=600){
      check(!by('scroll-hint').hidden,'Mobile swipe cue');
      check(cells[0].getBoundingClientRect().width>=44,'Touch target below 44px');

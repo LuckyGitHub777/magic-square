@@ -108,3 +108,17 @@ test('real browser interaction checks are enforced on every PR and production re
   assert.match(browser, /history\.back/);
   assert.match(browser, /generator-order/);
 });
+
+test('collection semantics and construction selection are complete', () => {
+  const app=read('app.js').toString(),css=read('styles.css').toString();
+  assert.match(html, /THE SEVEN PLANETARY SQUARES/);
+  assert.match(html, /id="planetary-switcher"[^>]*role="group"/);
+  assert.match(html, /id="historic-switcher"[^>]*role="group"/);
+  assert.match(html, /id="laboratory-state"[^>]*role="status"/);
+  assert.match(app, /drawer\.open=e\.group!=='planetary'/);
+  assert.match(app, /laboratoryState\.hidden=e\.group!=='laboratory'/);
+  assert.match(app, /'Agrippa · planetary tables'/);
+  assert.match(app, /button\.setAttribute\('aria-label'/);
+  assert.match(css, /\.lab-state\[hidden\]\{display:none\}/);
+  assert.match(read('tests/browser-smoke.cjs').toString(), /Multiple named active items/);
+});

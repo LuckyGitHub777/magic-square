@@ -16,6 +16,8 @@
   for(const e of EXHIBITS) {
     const button=document.createElement('button');button.type='button';button.className='collection-option';
     button.dataset.exhibit=e.id;button.setAttribute('aria-pressed','false');
+    const proof=verify(e.grid,e);
+    button.setAttribute('aria-label',e.name+'. '+e.grid.length+' by '+e.grid.length+'. '+(e.semimagic?'Row and column sum ':'Magic sum ')+proof.magicConstant);
     const symbol=document.createElement('span');symbol.className='option-symbol';symbol.textContent=e.symbol;symbol.setAttribute('aria-hidden','true');
     const label=document.createElement('span');label.textContent=e.name;
     button.append(symbol,label);button.addEventListener('click',()=>choose(e.id));groups[e.group].appendChild(button);
@@ -65,14 +67,24 @@
     put('metric-total',proof.total.toLocaleString('en-US'));
     put('check-status',e.semimagic?(2*n)+' verified rows/columns · straight diagonals differ':(2*n+2)+' equal-sum lines independently checked');
     put('verification-status','VERIFIED');
-    put('collection-description',e.name+' · '+n+'×'+n+' · Σ '+proof.magicConstant);
+    const collectionType=e.group==='planetary'?'Planetary':e.group==='masterpiece'?'Masterpiece':'Laboratory';
+    put('collection-description',collectionType+' · '+e.name+' · '+n+'×'+n+' · Σ '+proof.magicConstant);
     put('constant-equation',proof.total.toLocaleString('en-US')+' ÷ '+n+' = '+proof.magicConstant);
     put('constant-copy','The '+n*n+' entries total '+proof.total.toLocaleString('en-US')+'. Each balanced row and column returns '+proof.magicConstant+'.');
     put('complement-equation',e.normal?'a + ('+(n*n+1)+' − a) = '+(n*n+1):'Custom-number design');
     put('complement-copy',e.normal?'The numbers 1 through '+(n*n)+' pair arithmetically to '+(n*n+1)+'. These partners need not be opposite cells.':'This design uses nonconsecutive values; the normal complement formula does not apply.');
     put('context-title',e.group==='planetary'?'The square and its story.':'The design and its story.');
     put('context-era',e.tagline);put('context-description',e.description);
-    const link=document.getElementById('source-link');link.href=e.sourceUrl;link.textContent=e.name+' · source and context ↗';
+    const sourceNames={
+      'lo-shu':'SAGE Open · research article',
+      durer:'National Gallery of Art · artwork',
+      franklin:'MacTutor · historical record',
+      ramanujan:'Azim Premji University · research article'
+    };
+    const sourceName=e.group==='planetary'?'Agrippa · planetary tables':
+      e.group==='laboratory'?'Wolfram MathWorld · mathematical reference':sourceNames[e.id];
+    const link=document.getElementById('source-link');link.href=e.sourceUrl;
+    link.textContent=e.name+' · '+sourceName+' ↗';
     document.getElementById('solar-art').hidden=e.id!=='sun';
     document.getElementById('context').classList.toggle('context-solo',e.id!=='sun');
     document.getElementById('mode-pairs').disabled=!e.normal;
@@ -82,7 +94,11 @@
       const active=button.dataset.exhibit===e.id;button.classList.toggle('active',active);
       button.setAttribute('aria-pressed',String(active));
     });
-    if(e.group!=='planetary')document.getElementById('additional-collection').open=true;
+    const drawer=document.getElementById('additional-collection');
+    drawer.open=e.group!=='planetary';
+    const laboratoryState=document.getElementById('laboratory-state');
+    laboratoryState.hidden=e.group!=='laboratory';
+    if(e.group==='laboratory')laboratoryState.textContent='VIEWING '+n+' × '+n+' · Σ '+proof.magicConstant;
     render();
   }
   function trace(){

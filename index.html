@@ -36,10 +36,11 @@
       
       <nav class="collection" aria-label="Choose a magic square">
         <div class="collection-heading"><span>01 / THE COLLECTION</span><span id="collection-description" aria-live="polite">Sun · 6×6 · Σ 111</span></div>
-        <div id="planetary-switcher" class="collection-options" aria-label="Classical planetary squares"></div>
+        <div class="collection-group-label"><span>THE SEVEN PLANETARY SQUARES</span><span>3 × 3 — 9 × 9</span></div>
+        <div id="planetary-switcher" class="collection-options" role="group" aria-label="Classical planetary squares"></div>
         <details id="additional-collection" class="collection-more">
           <summary>Masterpieces &amp; the laboratory <span aria-hidden="true">＋</span></summary>
-          <div id="historic-switcher" class="collection-options" aria-label="Historical masterpieces"></div>
+          <div id="historic-switcher" class="collection-options" role="group" aria-label="Historical masterpieces"></div>
           <div class="lab-controls">
             <label for="generator-order">Construct a normal square</label>
             <select id="generator-order" aria-label="Square order">
@@ -49,6 +50,7 @@
               <option value="12">12 × 12</option>
             </select>
             <button type="button" id="generate-button" class="small-action">Construct →</button>
+            <span id="laboratory-state" class="lab-state" role="status" aria-live="polite" hidden></span>
           </div>
           <p class="collection-note">Documented historical arrangements are kept distinct from newly constructed examples.</p>
         </details>
