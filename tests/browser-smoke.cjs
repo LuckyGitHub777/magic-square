@@ -4,7 +4,7 @@ const fs=require('node:fs'),path=require('node:path'),http=require('node:http');
 const {execFile,spawnSync}=require('node:child_process');
 const root=path.resolve(__dirname,'..');
 const source=fs.readFileSync(path.join(root,'index.html'),'utf8');
-const probe=String.raw\`
+const probe=String.raw`
 (async()=>{
  const q=s=>document.querySelector(s),by=id=>document.getElementById(id);
  const check=(value,message)=>{if(!value)throw Error(message)};
@@ -52,7 +52,7 @@ const probe=String.raw\`
    check(document.documentElement.scrollWidth<=innerWidth+3,'Page-level horizontal overflow');
    document.body.dataset.audit='pass';
  }catch(e){document.body.dataset.audit='fail';document.body.dataset.auditError=encodeURIComponent(e.message||String(e))}
-})();\`;
+})();`;
 function chrome(){
  for(const name of ['/usr/bin/google-chrome','/usr/bin/chromium','/usr/bin/chromium-browser'])
   if(fs.existsSync(name))return name;
