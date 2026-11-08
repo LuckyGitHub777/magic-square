@@ -701,7 +701,7 @@
     ],
     "normal": false,
     "semimagic": false,
-    "sourceUrl": "https://publications.azimpremjiuniversity.edu.in/3104/1/ramanujans_honour_magic_square.pdf",
+    "sourceUrl": "https://publications.azimpremjiuniversity.edu.in/3104/",
     "description": "A birthday square widely attributed to Ramanujan, encoding 22 December 1887 in the first row; all ordinary lines sum to 139. Attribution is discussed in mathematical literature."
   }
 ];
